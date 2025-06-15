@@ -121,7 +121,7 @@ def add_course():
         course_name = request.form['course_name'].strip()
         fees = request.form['fees'].strip()
         faculty_name = request.form['faculty_name'].strip()
-        datetime_value = request.form['datetime_value'].strip()
+        datetime_value = request.form['datetime'].strip()
         duration = request.form['duration'].strip()
 
         if not course_id or not course_name or not fees or not faculty_name or not datetime_value or not duration:
@@ -136,7 +136,7 @@ def add_course():
 
         conn = sqlite3.connect('database.db')
         cur = conn.cursor()
-        cur.execute("INSERT INTO courses (course_id, course_name, fees, faculty_name, datetime_value, duration) VALUES (?, ?, ?, ?, ?, ?)",
+        cur.execute("INSERT INTO courses (course_id, course_name, fees, faculty_name, datetime, duration) VALUES (?, ?, ?, ?, ?, ?)",
                     (course_id, course_name, fees, faculty_name, datetime_value, duration))
         conn.commit()
         conn.close()
@@ -184,14 +184,14 @@ def course_details(course_id):
     if not course:
         return "Course not found", 404
 
-    # Modules per course
+    # Static or dynamic modules (can also be fetched from DB)
     modules = {
         1: ["Introduction to Data Science", "Python Basics", "Data Analysis", "Machine Learning", "Projects"],
-        2: ["Variables & Datatypes", "Control Structures", "Functions", "Modules & Packages", "File Handling"],
-        3: ["APPLICATION", "CONTROL"]
+        2: ["Variables & Datatypes", "Control Structures", "Functions", "Modules & Packages", "File Handling"]
     }
 
     return render_template("student/course_Details.html", course=course, modules=modules.get(course_id, []))
+
 @app.route('/student_home')
 def student_home():
     conn = sqlite3.connect('database.db')
