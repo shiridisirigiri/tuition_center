@@ -88,6 +88,38 @@ def available_courses():
     conn.close()
     return render_template('student/courses.html', courses=courses)
 
+from flask import flash
+'''
+@app.route('/add', methods=["GET", "POST"])
+def add_student():
+    if request.method == 'POST':
+        name = request.form['name'].strip()
+        course = request.form['course'].strip()
+        fees = request.form['fees'].strip()
+
+        if not name or not course or not fees:
+            return "All fields are required!", 400
+
+        try:
+            fees = int(fees)
+        except ValueError:
+            return "Fees must be a number!", 400
+
+        conn = sqlite3.connect('database.db')
+        cur = conn.cursor()
+        cur.execute("INSERT INTO students (name, course, fees) VALUES (?, ?, ?)", (name, course, fees))
+        student_id = cur.lastrowid  # Get new student's ID
+        conn.commit()
+        conn.close()
+        session['student_id'] = student_id  # Set session for logged in student
+        flash("🎉 Registration successful!")  # Flash message
+
+        return redirect(url_for('student_home'))
+
+    return render_template('admin/add_student.html')
+
+'''
+from flask import flash, session
 
 @app.route('/add', methods=["GET", "POST"])
 def add_student():
@@ -95,22 +127,32 @@ def add_student():
         name = request.form['name'].strip()
         course = request.form['course'].strip()
         fees = request.form['fees'].strip()
+
         if not name or not course or not fees:
-            return "All fields are required!", 400  # show error message
+            return "All fields are required!", 400
 
         try:
             fees = int(fees)
         except ValueError:
             return "Fees must be a number!", 400
+
         conn = sqlite3.connect('database.db')
         cur = conn.cursor()
-        cur.execute("INSERT INTO students (name, course, fees) VALUES (?, ?, ?)",
-                    (name, course, fees))
+        cur.execute("INSERT INTO students (name, course, fees) VALUES (?, ?, ?)", (name, course, fees))
+        student_id = cur.lastrowid
         conn.commit()
         conn.close()
-        return redirect(url_for('students'))
-    return render_template('admin/add_student.html')
 
+        # Check role
+        if session.get('role') == 'admin':
+            flash("✅ Student added successfully!")
+            return redirect(url_for('students'))
+        else:
+            session['student_id'] = student_id
+            flash("🎉 Registration successful!")
+            return redirect(url_for('student_home'))
+
+    return render_template('admin/add_student.html')
 
 from datetime import datetime  # Add this import at the top
 
@@ -192,14 +234,30 @@ def course_details(course_id):
 
     return render_template("student/course_Details.html", course=course, modules=modules.get(course_id, []))
 
+
 @app.route('/student_home')
 def student_home():
-    conn = sqlite3.connect('database.db')
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM courses")
-    courses = cur.fetchall()
-    conn.close()
-    return render_template('student/student_home.html', courses=courses, page="student_home")
+    if 'student_id' in session:
+        student_id = session['student_id']
+        conn = sqlite3.connect('database.db')
+        cur = conn.cursor()
+
+        # Fetch student details
+        cur.execute("SELECT * FROM students WHERE id = ?", (student_id,))
+        student = cur.fetchone()
+
+        # Fetch courses to show (if needed on the student home page)
+        cur.execute("SELECT * FROM courses")
+        courses = cur.fetchall()
+
+        conn.close()
+
+        return render_template('student/student_home.html', student=student, courses=courses, page="student_home")
+    else:
+        return redirect(url_for('index'))
+
+
+
 
 
 

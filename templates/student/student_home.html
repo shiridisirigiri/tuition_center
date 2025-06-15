@@ -1,6 +1,14 @@
 <!-- templates/student_home.html -->
 {% extends "layout.html" %}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert" style="margin: 20px auto; width: 60%; background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; border-left: 6px solid #28a745;">
+      {{ messages[0] }}
+    </div>
+  {% endif %}
+{% endwith %}
+
 <div class="container" style="padding: 30px; text-align: center;">
 
     <h1 style="color: #2c3e50;">Welcome to <span style="color: #27ae60;">DREAM TUITION POINT</span></h1>
