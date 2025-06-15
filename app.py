@@ -89,36 +89,7 @@ def available_courses():
     return render_template('student/courses.html', courses=courses)
 
 from flask import flash
-'''
-@app.route('/add', methods=["GET", "POST"])
-def add_student():
-    if request.method == 'POST':
-        name = request.form['name'].strip()
-        course = request.form['course'].strip()
-        fees = request.form['fees'].strip()
 
-        if not name or not course or not fees:
-            return "All fields are required!", 400
-
-        try:
-            fees = int(fees)
-        except ValueError:
-            return "Fees must be a number!", 400
-
-        conn = sqlite3.connect('database.db')
-        cur = conn.cursor()
-        cur.execute("INSERT INTO students (name, course, fees) VALUES (?, ?, ?)", (name, course, fees))
-        student_id = cur.lastrowid  # Get new student's ID
-        conn.commit()
-        conn.close()
-        session['student_id'] = student_id  # Set session for logged in student
-        flash("🎉 Registration successful!")  # Flash message
-
-        return redirect(url_for('student_home'))
-
-    return render_template('admin/add_student.html')
-
-'''
 from flask import flash, session
 
 @app.route('/add', methods=["GET", "POST"])
@@ -163,7 +134,7 @@ def add_course():
         course_name = request.form['course_name'].strip()
         fees = request.form['fees'].strip()
         faculty_name = request.form['faculty_name'].strip()
-        datetime_value = request.form['datetime'].strip()
+        datetime_value = request.form.get('datetime', '').strip()
         duration = request.form['duration'].strip()
 
         if not course_id or not course_name or not fees or not faculty_name or not datetime_value or not duration:
@@ -178,7 +149,7 @@ def add_course():
 
         conn = sqlite3.connect('database.db')
         cur = conn.cursor()
-        cur.execute("INSERT INTO courses (course_id, course_name, fees, faculty_name, datetime, duration) VALUES (?, ?, ?, ?, ?, ?)",
+        cur.execute("INSERT INTO courses (course_id, course_name, fees, faculty_name, datetime_value, duration) VALUES (?, ?, ?, ?, ?, ?)",
                     (course_id, course_name, fees, faculty_name, datetime_value, duration))
         conn.commit()
         conn.close()
