@@ -172,26 +172,29 @@ def edit_student(id):
         conn.close()
         return render_template('admin/edit_student.html', student=student)
 
+import traceback, os, sqlite3
 
-@app.route('/course/<int:course_id>')
+@app.route('/course/<course_id>')
 def course_details(course_id):
-    conn = sqlite3.connect('database.db')
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM courses WHERE course_id = ?", (course_id,))
-    course = cur.fetchone()
-    conn.close()
+    try:
+        db_path = os.path.join(os.path.dirname(__file__), 'database.db')
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM courses WHERE course_id = ?", (course_id,))
+        course = cur.fetchone()
+        conn.close()
+        if not course:
+            return "Course not found", 404
 
-    if not course:
-        return "Course not found", 404
+        modules = {
+            "1": ["Intro to DS", "Python", "ML"],
+            "2": ["Vars", "Loops"]
+        }
+        return render_template("student/course_details.html", course=course, modules=modules.get(course_id, []))
+    except Exception:
+        return "<pre>" + traceback.format_exc() + "</pre>", 500
 
-    # Modules per course
-    modules = {
-        1: ["Introduction to Data Science", "Python Basics", "Data Analysis", "Machine Learning", "Projects"],
-        2: ["Variables & Datatypes", "Control Structures", "Functions", "Modules & Packages", "File Handling"],
-        3: ["APPLICATION", "CONTROL"]
-    }
 
-    return render_template("student/course_details.html", course=course, modules=modules.get(course_id, []))
 @app.route('/student_home')
 def student_home():
     conn = sqlite3.connect('database.db')
