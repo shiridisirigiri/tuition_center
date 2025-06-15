@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tuition Center</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
+    </head>
+<body class="{{ page }}">
+    <h1>DREAM TUITION POINT</h1>
+    {% if session.get('role') == 'admin' %}
+    <a href="/students">Students</a>  |
+    <a href="/add">Add Student</a>  |
+    <a href="/courses">Courses</a>  | 
+    <a href="/addcourse">Add Course</a> |
+    <a href="/logout">Logout</a>
+  {% else %}
+    <a href="/student_home">Dashboard</a>   |
+    <a href="/available_courses">Courses</a>  |
+  {% endif %}
+  
+    <hr>
+    {% block content %}{% endblock %}
+    {% if session.get('role') != 'admin' %}
+    <footer>
+        <a href="/admin_login" style="font-size: small;">Admin</a>
+    </footer>
+    {% endif %}
+</body>
+
+
+
+</html>

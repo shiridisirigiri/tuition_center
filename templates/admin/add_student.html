@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+<center>
+<h2>Add New Student</h2>
+<img src="{{ url_for('static', filename='logo.jpg') }}" alt="logo" height="200" width="200">
+<form method="POST">
+    Name: <input type="text" name="name" required><br>
+    <br>
+    Course: <input type="text" name="course" required><br>
+    <br>
+    Fees: <input type="number" name="fees" required><br>
+    <br>
+    <input type="submit" value="Add Student">
+</form>
+</center>
+{% endblock %}

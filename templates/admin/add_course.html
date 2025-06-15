@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<center>
+<h2>Add Course</h2>
+<img src="{{ url_for('static', filename='logo.jpg') }}" alt="logo" height="200" width="200">
+<form method="POST">
+    Course_ID: <input type="text" name="course_id" required><br>
+    <br>
+    Course_Name: <input type="text" name="course_name" required><br>
+    <br>
+    Fees: <input type="number" name="fees" required><br>
+    <br>
+    Faculty:<input type="text" name="faculty_name" required><br>
+    <br>
+    Date and time: <input type="datetime-local" name="datetime" required><br>
+    <br>
+    Duration:<input type="text" name="duration" required><br>
+    <br>
+    <input type="submit" value="Add Course">
+</form>
+</center>
+{% endblock %}

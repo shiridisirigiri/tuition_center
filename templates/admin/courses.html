@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>COURSE DETAILS</h2>
+<table border="1">
+    <tr>
+        <th>Course_ID</th>
+        <th>Course_Name</th>
+        <th>Course_Fee</th>
+        <th>Faculty</th>
+        <th>Date and Time</th>
+        <th>Duration</th>
+    </tr>
+    {% for course in courses %}
+    <tr>
+        <td>{{ course[0] }}</td>
+        <td><a href="{{ url_for('course_details', course_id=course[0]) }}">{{ course[1] }}</a></td>
+        <td>{{ course[2] }}</td>
+        <td>{{ course[3] }}</td>
+        <td>{{ course[4] }}</td>
+        <td>{{ course[5] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

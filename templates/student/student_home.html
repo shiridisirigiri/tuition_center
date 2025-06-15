@@ -1,0 +1,40 @@
+<!-- templates/student_home.html -->
+{% extends "layout.html" %}
+{% block content %}
+<div class="container" style="padding: 30px; text-align: center;">
+
+    <h1 style="color: #2c3e50;">Welcome to <span style="color: #27ae60;">DREAM TUITION POINT</span></h1>
+    <p style="font-size: 18px;">Empowering Students With Knowledge</p>
+    <img src="{{ url_for('static', filename='tuition.jpeg') }}" alt="Tuition Image" width="600" style="border-radius: 10px;"><br><br>
+
+    <h2 style="color: #34495e;">📚 Popular Courses</h2>
+    <table border="1" style="margin: 0 auto; border-collapse: collapse; width: 80%;">
+        <tr style="background-color: #f1f1f1;">
+            <th>Course Name</th>
+            <th>Fees</th>
+            <th>Faculty</th>
+            <th>More Info</th>
+        </tr>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course[1] }}</td>
+            <td>₹{{ course[2] }}</td>
+            <td>{{ course[3] }}</td>
+            <td><a href="{{ url_for('course_details', course_id=course[0]) }}">View Modules</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br><h2 style="color: #34495e;">💬 Testimonials</h2>
+    <p><i>"My daughter topped her class thanks to Dream Tuition!"</i> – Parent</p>
+    <p><i>"Loved the way they taught Python – very hands-on."</i> – Student</p>
+
+    <br><h2 style="color: #34495e;">📞 Contact Us</h2>
+    <p>Email: <a href="mailto:support@dreamtuition.com">support@dreamtuition.com</a></p>
+    <p>Phone: +91-6300005778</p>
+
+    <br><a href="{{ url_for('add_student') }}">
+        <button style="padding: 10px 20px; font-size: 16px; background-color: #27ae60; color: white; border: none; border-radius: 5px;">Register Now</button>
+    </a>
+</div>
+{% endblock %}
