@@ -8,10 +8,10 @@ CREATE TABLE students (
 DROP TABLE IF EXISTS courses;
 
 CREATE TABLE courses (
-    course_id TEXT PRIMARY KEY,
+    course_id int PRIMARY KEY,
     course_name TEXT NOT NULL,
     fees INTEGER NOT NULL,
     faculty_name TEXT NOT NULL,
-    datetime TEXT NOT NULL,
+    datetime_value TEXT NOT NULL,
     duration TEXT NOT NULL
 );
