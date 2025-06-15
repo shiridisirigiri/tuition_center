@@ -166,6 +166,14 @@ def delete_student(id):
     conn.commit()
     conn.close()
     return redirect(url_for('students'))
+@app.route('/delete_course/<int:course_id>', methods=["POST"])
+def delete_course(course_id):
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+    cur.execute("DELETE FROM courses WHERE course_ID = ?", (course_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('courses'))
 
 @app.route('/edit/<int:id>', methods=["GET", "POST"])
 def edit_student(id):
@@ -184,6 +192,37 @@ def edit_student(id):
         student = cur.fetchone()
         conn.close()
         return render_template('admin/edit_student.html', student=student)
+@app.route('/edit_course/<int:course_id>', methods=["GET", "POST"])
+def edit_course(course_id):
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+    if request.method == "POST":
+        course_name = request.form.get('course_name', '').strip()
+        fees = request.form.get('fees', '').strip()
+        faculty_name = request.form.get('faculty_name', '').strip()
+        datetime_value = request.form.get('datetime_value', '').strip()
+        duration = request.form.get('duration', '').strip()
+
+        # Basic validation
+        if not course_name or not fees or not faculty_name or not datetime_value or not duration:
+            conn.close()
+            return "All fields are required!", 400
+
+        cur.execute("""
+            UPDATE courses
+            SET course_name = ?, fees = ?, faculty_name = ?, datetime_value = ?, duration = ?
+            WHERE course_id = ?
+        """, (course_name, fees, faculty_name, datetime_value, duration, course_id))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('courses'))
+
+    else:
+        cur.execute("SELECT * FROM courses WHERE course_id = ?", (course_id,))
+        course = cur.fetchone()
+        conn.close()
+        return render_template('admin/edit_course.html', course=course)
 
 
 @app.route('/course/<int:course_id>')
